@@ -42,8 +42,7 @@ print("MQTT Connected!")
 #     if light < 300:
 #         led.on()
 #     else:
-#         led.off()
-    
+#         led.off()    
 #     time.sleep(1)
 
 while True:
