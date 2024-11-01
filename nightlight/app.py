@@ -1,3 +1,4 @@
+import json
 import paho.mqtt.client as mqtt
 import time
 from counterfit_shims_grove.grove_light_sensor_v1_2 import GroveLightSensor
@@ -17,6 +18,8 @@ led = GroveLed(5)
 id = '67d75ceb-5e94-4531-8472-c05f7864e462'
 client_name = id + 'nightlight_client'
 
+client_telemetry_topic = id + '/telemetry'
+
 # Use the appropriate protocol version (MQTTv5 or MQTTv311)
 protocol_version = mqtt.MQTTv5  # Use mqtt.MQTTv311 if you're working with MQTT 3.1.1
 
@@ -32,13 +35,23 @@ mqtt_client.loop_start()
 print("MQTT Connected!")
 
 # Infinite loop to monitor light levels and control LED
+# while True:
+#     light = light_sensor.light
+#     print('Light level:', light)
+
+#     if light < 300:
+#         led.on()
+#     else:
+#         led.off()
+    
+#     time.sleep(1)
+
 while True:
     light = light_sensor.light
-    print('Light level:', light)
-    
-    if light < 300:
-        led.on()
-    else:
-        led.off()
+    telemetry = json.dumps({'light': light})
 
-    time.sleep(1)
+    print("Sending telemetry ", telemetry)
+
+    mqtt_client.publish(client_telemetry_topic, telemetry)
+
+    time.sleep(5)
